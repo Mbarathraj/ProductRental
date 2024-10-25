@@ -42,11 +42,16 @@ const UserDashboard = ({ uid }) => {
   const [messageOpen, setMessageOpen] = useState(false);
   const [wishListOpen, setWishListOpen] = useState(false);
   const { products } = useProducts();
+  const [paymentHistory,setPaymentHistory]=useState([])
   const [active,setActive]=useState("")
   useEffect(() => {
     axios.post("http://localhost:5675/orders", { uid }).then((res) => {
       setOrders(res.data);
     });
+    axios.post("http://localhost:5675/paymenthistory",{uid})
+    .then(res =>{
+        setPaymentHistory(res.data)
+    })
   }, [uid]);
 
   // Filter orders based on search term
@@ -185,7 +190,7 @@ const UserDashboard = ({ uid }) => {
             </div>
             :
             <div>
-              <PaymentHisTable />
+              <PaymentHisTable paymentHistory={paymentHistory}/>
             </div> 
           }  
           </Content>

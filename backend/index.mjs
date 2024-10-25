@@ -279,9 +279,19 @@ app.get("/getissues",(req,res)=>{
     res.send(datas)
   })
 })
+
+
 const paymentColletion=collection(DB,"payments")
 app.post("/addpayment",(req,res)=>{
   addDoc(paymentColletion,req.body.paymentDetails).then(()=> res.send("ok")).catch(err => res.send("Error"))
+})
+
+app.post("/paymenthistory",(req,res)=>{
+  const docRef=query(paymentColletion,where("paymentBy","==",req.body.uid))
+  getDocs(docRef).then(snap=>{
+    const datas=snap.docs.map(data => data.data())
+    res.send(datas)
+  })
 })
 app.listen(PORT, () => {
   console.log("Port is running on ", PORT);

@@ -1,30 +1,13 @@
 import React from 'react';
 import { Table, Tag } from 'antd';
 
-const PaymentHisTable = () => {
-  const data = [
-    {
-      key: '1',
-      date: '2024-10-01',
-      status: 'Completed',
-      paymentId: 'PAY123456',
-    },
-    {
-      key: '2',
-      date: '2024-10-05',
-      status: 'Pending',
-      paymentId: 'PAY123457',
-    },
-    {
-      key: '3',
-      date: '2024-10-10',
-      status: 'Failed',
-      paymentId: 'PAY123458',
-    },
-    // Add more entries as needed
-  ];
-
+const PaymentHisTable = ({paymentHistory}) => {
   const columns = [
+    {
+      title: 'Payment ID',
+      dataIndex: 'paymentId',
+      key: 'paymentId',
+    },
     {
       title: 'Date',
       dataIndex: 'date',
@@ -56,14 +39,20 @@ const PaymentHisTable = () => {
         );
       },
     },
+ 
     {
-      title: 'Payment ID',
-      dataIndex: 'paymentId',
-      key: 'paymentId',
-    },
+      title:"Amount",
+      dataIndex:"amount",
+      key:"amount",
+      render: (text)=>{
+        return <Tag key={text} color='white'style={{backgroundColor:"#52c41a"}}>
+          $&nbsp;{text}
+        </Tag>
+      }
+    }
   ];
 
-  return <Table dataSource={data} columns={columns} />;
+  return <Table dataSource={paymentHistory} columns={columns} />;
 };
 
 export default PaymentHisTable;
