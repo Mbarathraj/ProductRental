@@ -15,3 +15,10 @@ Seller Side:
 ![Screenshot 2024-10-25 101729](https://github.com/user-attachments/assets/a27d1f06-908f-4f30-bb82-eaca9575c30a)
 ![Screenshot 2024-10-25 101743](https://github.com/user-attachments/assets/b17cd594-40b1-477a-9e67-8e228c96b5d5)
 ![Screenshot 2024-10-25 101847](https://github.com/user-attachments/assets/f6bb6baa-62e0-456e-932f-45809d9fb267)
+
+Admin Side:
+![Screenshot 2024-10-25 102027](https://github.com/user-attachments/assets/b490af5b-6909-453e-b5b0-51a3d88f63c4)
+![Screenshot 2024-10-25 101901](https://github.com/user-attachments/assets/2b73462c-039c-41b5-8b49-d17865de2127)
+![Screenshot 2024-10-25 101952](https://github.com/user-attachments/assets/3aa01e9e-2447-4f95-9648-9f57d7c02408)
+![Screenshot 2024-10-25 102004](https://github.com/user-attachments/assets/e667bf1e-c12a-4253-88b5-3a2e7abe195e)
+![Screenshot 2024-10-25 102012](https://github.com/user-attachments/assets/d8b64b9c-4980-48dc-b18a-3b6ed6ecf4b8)
