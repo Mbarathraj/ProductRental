@@ -279,7 +279,10 @@ app.get("/getissues",(req,res)=>{
     res.send(datas)
   })
 })
-
+const paymentColletion=collection(DB,"payments")
+app.post("/addpayment",(req,res)=>{
+  addDoc(paymentColletion,req.body.paymentDetails).then(()=> res.send("ok")).catch(err => res.send("Error"))
+})
 app.listen(PORT, () => {
   console.log("Port is running on ", PORT);
 });

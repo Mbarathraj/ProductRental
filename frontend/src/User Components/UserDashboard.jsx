@@ -143,8 +143,9 @@ const UserDashboard = ({ uid }) => {
                 </Card>
               ))}
             </div>
-
+              
             <div className="mb-3">
+              Issues Box: &nbsp;
               <Popover
                 content={
                   <div className="d-flex flex-column">

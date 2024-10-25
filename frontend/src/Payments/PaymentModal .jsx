@@ -7,7 +7,7 @@ import axios from 'axios';
 const { Text } = Typography;
 const stripePromise = loadStripe('pk_test_51QDXE1B4RWPMVvRR1E6Sbs60z3MKeHarHCk895l0YTWa4qyIg5BYU8kD2jGuCir14OY53ofHeu0OZnLHjNXJYaW100TTJuqqfj');
 
-const PaymentModal = ({ isOpen, onRequestClose, totalPrice, onPaymentSuccess, products, product, setProducts, index, id, uid, setBookingModal, setPaymentModalOpen }) => {
+const PaymentModal = ({ isOpen, onRequestClose, totalPrice, onPaymentSuccess, products, product, setProducts, index, id, uid }) => {
   const [loading, setLoading] = useState(false);
   const stripe = useStripe();
   const elements = useElements();
@@ -32,7 +32,20 @@ const PaymentModal = ({ isOpen, onRequestClose, totalPrice, onPaymentSuccess, pr
 
       const { clientSecret } = await response.json();
       const cardElement = elements.getElement(CardElement);
-
+      const paymentDetails={
+        paymentId: clientSecret.split('_secret')[0],
+        paymentBy:uid,
+        status:"Completed",
+        date: new Date().toLocaleString(),
+        productId:id,
+        amount:totalPrice
+      }
+      
+      axios.post("http://localhost:5675/addpayment",{paymentDetails}).then(res => {
+        if(res.data=="ok"){
+          console.log("hi")
+        }
+      })
       // Confirm the payment with Stripe
       // const { error } = await stripe.confirmCardPayment(clientSecret, {
       //   payment_method: {
@@ -46,6 +59,8 @@ const PaymentModal = ({ isOpen, onRequestClose, totalPrice, onPaymentSuccess, pr
       //   setLoading(false);
       // } else {
         // Payment was successful, proceed with booking
+
+
          bookingResponse = await axios.post("http://localhost:5675/toBook", { id, uid, product });
 
         if (bookingResponse.data === "ok") {
@@ -55,8 +70,7 @@ const PaymentModal = ({ isOpen, onRequestClose, totalPrice, onPaymentSuccess, pr
           product.booked = true;
           message.success("Payment Successful and booked!");
           onPaymentSuccess(); // Trigger success callback
-          setPaymentModalOpen(false);
-          onRequestClose(true) // Close the payment modal
+          onRequestClose(false) // Close the payment modal
           // setBookingModal(false)
           setLoading(false);
         } else {

@@ -95,8 +95,6 @@ const ShowProductDetails = () => {
     }
   };
 
-  console.log({paymentModalOpen})
-
   const handleSubmit = (values) => {
     product.booked=true
     product.bookedby=uid
@@ -104,6 +102,13 @@ const ShowProductDetails = () => {
     product.enddate=edate
     handleBookNow()
   };
+
+  useEffect(()=>{
+    if(products[index]?.data?.booked){
+      setBookingModal(false)
+    }
+  },[products[index]?.data?.booked])
+
   return (
     <div
       className="container d-flex flex-column justify-content-between"
@@ -229,7 +234,6 @@ const ShowProductDetails = () => {
           type="primary"
           onClick={() => ! products[index].data.booked && setBookingModal(true)}
         >
-          {console.log(products[index])}
           { products[index] && products[index].data.booked ? "Booked" : "Book Now"}
         </Button>
       </div>
@@ -288,10 +292,7 @@ const ShowProductDetails = () => {
         <PaymentModal
         isOpen={paymentModalOpen}
         setPaymentModalOpen={setPaymentModalOpen}
-        onRequestClose={(boolean) => {
-          setPaymentModalOpen(false)
-          if(boolean) setBookingModal(false)
-        }}
+        onRequestClose={(boolean) => setPaymentModalOpen(false)}
         totalPrice={totalPrice}
         product={product}
         products={products}
@@ -299,7 +300,6 @@ const ShowProductDetails = () => {
         uid={uid}
         id={id && id}
         index={index}
-        setBookingModal={setBookingModal}
         onPaymentSuccess={handlePaymentSuccess}
       />)}
       </Modal>
