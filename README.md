@@ -11,3 +11,7 @@ Users Side:
 ![Screenshot 2024-10-25 101525](https://github.com/user-attachments/assets/128224c2-1327-458c-b234-cf3da7502a6c)
 
 Seller Side:
+![Screenshot 2024-10-25 101901](https://github.com/user-attachments/assets/be1c4b14-e7b6-4bec-8ee9-4f61ded9ff51)
+![Screenshot 2024-10-25 101729](https://github.com/user-attachments/assets/a27d1f06-908f-4f30-bb82-eaca9575c30a)
+![Screenshot 2024-10-25 101743](https://github.com/user-attachments/assets/b17cd594-40b1-477a-9e67-8e228c96b5d5)
+![Screenshot 2024-10-25 101847](https://github.com/user-attachments/assets/f6bb6baa-62e0-456e-932f-45809d9fb267)
