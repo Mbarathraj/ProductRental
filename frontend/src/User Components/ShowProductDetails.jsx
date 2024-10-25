@@ -18,21 +18,23 @@ import {
 import {
   DollarOutlined,
   HeartOutlined,
+  SendOutlined,
   TagOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { useLocation } from "react-router-dom";
-import { useProducts } from './ProductContext';
+import { useProducts } from "./ProductContext";
 import axios from "axios";
 import PaymentModal from "../Payments/PaymentModal ";
-
+const { TextArea } = Input;
 const { Title, Text } = Typography;
 const ShowProductDetails = () => {
-  const {products,setProducts} = useProducts();
+  const { products, setProducts } = useProducts();
   const [form] = Form.useForm();
   const location = useLocation();
-  const { product, id, index,uid } = location.state;
+  const { product, id, index, uid } = location.state;
   const [bookingModal, setBookingModal] = useState(false);
+  const [review, setReview] = useState("");
   const originalPrice = product.price_per_day;
   const contentStyle = {
     margin: 0,
@@ -45,10 +47,15 @@ const ShowProductDetails = () => {
   const [totalPrice, setTotalPrice] = useState(product.price_per_day);
   const [sdt, setSdt] = useState(null);
   const [edt, setEdt] = useState(null);
-  const[sdate,setSDate]=useState("")
-  const[edate,setEDate]=useState("")
+  const [sdate, setSDate] = useState("");
+  const [edate, setEDate] = useState("");
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
-  
+  const [starValue, setStarValue] = useState(0);
+
+  const onChange = (newValue) => {
+    setStarValue(newValue);
+    console.log("Rated:", newValue);
+  };
   // Function to handle payment success
   const handlePaymentSuccess = () => {
     // Add logic to update your state or handle post-payment tasks
@@ -66,13 +73,13 @@ const ShowProductDetails = () => {
   const calculatePrice = (start, end) => {
     if (start && end) {
       const interval = end - start;
-      const additionalCost = Math.ceil(interval / (10000 * 60 * 60)) ; // $10 per hour
+      const additionalCost = Math.ceil(interval / (10000 * 60 * 60)); // $10 per hour
       setTotalPrice(originalPrice + additionalCost);
     }
   };
   const handleStartChange = (date) => {
     if (date) {
-      setSDate(date.toLocaleString())
+      setSDate(date.toLocaleString());
       const newStart = date.valueOf();
       setSdt(newStart);
       calculatePrice(newStart, edt); // Pass the new start date and current end date
@@ -83,9 +90,8 @@ const ShowProductDetails = () => {
   };
 
   const handleEndChange = (date) => {
-   
     if (date) {
-      setEDate(date.toLocaleString())
+      setEDate(date.toLocaleString());
       const newEnd = date.valueOf();
       setEdt(newEnd);
       calculatePrice(sdt, newEnd); // Pass the current start date and new end date
@@ -96,18 +102,46 @@ const ShowProductDetails = () => {
   };
 
   const handleSubmit = (values) => {
-    product.booked=true
-    product.bookedby=uid
-    product.startdate=sdate
-    product.enddate=edate
-    handleBookNow()
+    product.booked = true;
+    product.bookedby = uid;
+    product.startdate = sdate;
+    product.enddate = edate;
+    handleBookNow();
   };
 
-  useEffect(()=>{
-    if(products[index]?.data?.booked){
-      setBookingModal(false)
+  const handleReviews = (product) => {
+    if (!review) return message.warning("Input is required");
+    if(starValue==0 || !starValue) return message.warning("Rating also Required")
+    const newReview = {
+      rateby: uid,
+      review,
+      star: 3,
+      date: new Date().toLocaleString(),
+    };
+    const data = products.map((prod) => {
+      return {
+        data:
+          prod.id == products[index].id
+            ? { ...prod.data, ...prod.data.ratings.push(newReview) }
+            : prod.data,
+        id,
+      };
+    });
+    product.ratings.push(newReview)
+    axios.post("http://localhost:5675/postreview",{ratings: newReview,id}).then(res =>{
+       console.log(res.data)
+       setProducts(data);
+    } )
+    setReview("")
+    setStarValue(0)
+  };
+ 
+
+  useEffect(() => {
+    if (products[index]?.data?.booked) {
+      setBookingModal(false);
     }
-  },[products[index]?.data?.booked])
+  }, [products[index]?.data?.booked]);
 
   return (
     <div
@@ -116,28 +150,40 @@ const ShowProductDetails = () => {
     >
       <div className="d-flex mt-3 gap-1 flex-column">
         <div className="d-flex">
-        <Carousel
-  arrows
-  infinite={true}
-  className="custom-carousel p-4 border border-1"
-  style={{
-    width: "400px",
-    "--slick-active-dot-bg": "#000000",
-    "--slick-dot-bg": "#ccc",
-    "--slick-arrow-color": "#000000",
-  }}
->
-  {product &&
-    product.images.map((url, index) => (
-      <div key={index} style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "200px" }}>
-        <Image 
-          src={url} 
-          style={{ width: "100%", height: "100%", objectFit: "cover" }} 
-          alt={`Product image ${index + 1}`}
-        />
-      </div>
-    ))}
-</Carousel>
+          <Carousel
+            arrows
+            infinite={true}
+            className="custom-carousel p-4 border border-1"
+            style={{
+              width: "400px",
+              "--slick-active-dot-bg": "#000000",
+              "--slick-dot-bg": "#ccc",
+              "--slick-arrow-color": "#000000",
+            }}
+          >
+            {product &&
+              product.images.map((url, index) => (
+                <div
+                  key={index}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "200px",
+                  }}
+                >
+                  <Image
+                    src={url}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                    alt={`Product image ${index + 1}`}
+                  />
+                </div>
+              ))}
+          </Carousel>
 
           <Card
             className="product-details flex-grow-1"
@@ -193,6 +239,37 @@ const ShowProductDetails = () => {
         <div className="mt-1">
           <h5>Reviews:</h5>
           <div
+        className="p-3 w-25 justify-content-center"
+        style={{ borderRadius: '8px', backgroundColor: '#f7f7f7', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}
+      >
+        <TextArea
+          onChange={(e) => setReview(e.target.value)}
+          value={review}
+          style={{
+            minHeight: '60px',
+            maxHeight: '100px',
+            resize: 'none',
+            border: '1px solid #d9d9d9',
+            borderRadius: '4px',
+            outline: 'none',
+            marginRight: '12px',
+          }}
+          autoSize={{ minRows: 1, maxRows: 3 }}
+          placeholder="Type your message..."
+        />
+        <div className="m-2">
+          <Rate onChange={setStarValue} value={starValue} allowHalf style={{ marginBottom: '8px' }} className="me-5"/>
+          <Button
+            type="primary"
+            icon={<SendOutlined />}
+            onClick={() => handleReviews(product)}
+            style={{ alignSelf: 'flex-end' }}
+          >
+            Send
+          </Button>
+        </div>
+      </div>
+          <div
             style={{
               maxHeight: "200px",
               overflow: "scroll",
@@ -200,29 +277,30 @@ const ShowProductDetails = () => {
             }}
             className="d-flex flex-column gap-3 p-4"
           >
-            {product.ratings &&
-              product.ratings.map((rating, index) => {
-                return (
-                  <div className="border-bottom border-1" key={index}>
-                    <div className="d-flex gap-1 align-items-center">
-                      <UserOutlined
-                        style={{ fontSize: "21px" }}
-                        className="border rounded-5 p-3"
-                      />{" "}
-                      <div>
-                        <strong className="me-2">{rating.rateby}</strong>
-                        <Rate
-                          allowHalf
-                          disabled
-                          value={rating.star}
-                          style={{ fontSize: "15px" }}
-                        />
-                      </div>
-                    </div>
-                    <div className="ms-5 mt-2 mb-2">{rating.review}</div>
-                  </div>
-                );
-              })}
+           {product.ratings && 
+  product.ratings
+    .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort by date, most recent first
+    .map((rating, index) => (
+      <div className="border-bottom border-1" key={index}>
+        <div className="d-flex gap-1 align-items-center">
+          <UserOutlined
+            style={{ fontSize: "21px" }}
+            className="border rounded-5 p-3"
+          />{" "}
+          <div>
+            <strong className="me-2">{rating.rateby}</strong>
+            <Rate
+              allowHalf
+              disabled
+              value={rating.star}
+              style={{ fontSize: "15px" }}
+            />
+          </div>
+        </div>
+        <div className="ms-5 mt-2 mb-2">{rating.review}</div>
+      </div>
+    ))}
+
           </div>
         </div>
       </div>
@@ -232,9 +310,11 @@ const ShowProductDetails = () => {
         </Button>
         <Button
           type="primary"
-          onClick={() => ! products[index].data.booked && setBookingModal(true)}
+          onClick={() => !products[index].data.booked && setBookingModal(true)}
         >
-          { products[index] && products[index].data.booked ? "Booked" : "Book Now"}
+          {products[index] && products[index].data.booked
+            ? "Booked"
+            : "Book Now"}
         </Button>
       </div>
       <Modal
@@ -280,28 +360,29 @@ const ShowProductDetails = () => {
             />
           </Form.Item>
 
-          <Form.Item>Price: ${ totalPrice && totalPrice}</Form.Item>
+          <Form.Item>Price: ${totalPrice && totalPrice}</Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" >
+            <Button type="primary" htmlType="submit">
               Book
             </Button>
           </Form.Item>
         </Form>
 
-{paymentModalOpen && (
-        <PaymentModal
-        isOpen={paymentModalOpen}
-        setPaymentModalOpen={setPaymentModalOpen}
-        onRequestClose={(boolean) => setPaymentModalOpen(false)}
-        totalPrice={totalPrice}
-        product={product}
-        products={products}
-        setProducts={setProducts}
-        uid={uid}
-        id={id && id}
-        index={index}
-        onPaymentSuccess={handlePaymentSuccess}
-      />)}
+        {paymentModalOpen && (
+          <PaymentModal
+            isOpen={paymentModalOpen}
+            setPaymentModalOpen={setPaymentModalOpen}
+            onRequestClose={(boolean) => setPaymentModalOpen(false)}
+            totalPrice={totalPrice}
+            product={product}
+            products={products}
+            setProducts={setProducts}
+            uid={uid}
+            id={id && id}
+            index={index}
+            onPaymentSuccess={handlePaymentSuccess}
+          />
+        )}
       </Modal>
     </div>
   );

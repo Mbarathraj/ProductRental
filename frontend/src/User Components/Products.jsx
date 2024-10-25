@@ -33,18 +33,18 @@ const Products = ({ uid }) => {
           enterButton
         />
       </div>
-      <Row gutter={[16, 16]} justify="center">
+      <div className="d-flex justify-content-center gap-5 flex-wrap">
         {filteredProducts.map((product, index) => (
-          <Col key={index} xs={24} sm={12} md={8} lg={6}>
+          <div>
             <ProductCard 
               index={index} 
               product={product.data} 
               id={product.id} 
               uid={uid} 
             />
-          </Col>
+          </div>
         ))}
-      </Row>
+      </div>
     </div>
   );
 };

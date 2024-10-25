@@ -293,6 +293,15 @@ app.post("/paymenthistory",(req,res)=>{
     res.send(datas)
   })
 })
+
+app.post("/postreview",async (req,res)=>{
+  const docRef=doc(DB,"products",req.body.id)
+  await updateDoc(docRef, {
+    ratings: arrayUnion(req.body.ratings), // Add the ratings object to the array
+  });
+  console.log("ok")
+  res.send("Review posted successfully");
+})
 app.listen(PORT, () => {
   console.log("Port is running on ", PORT);
 });

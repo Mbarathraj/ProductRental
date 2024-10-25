@@ -26,6 +26,7 @@ const AddModal = ({ showAddModal, setAddModal, uid, products, setProducts }) => 
     values.sellerid = uid;
     values.bookedby = "";
     values.booked = false;
+    values.ratings=[]
 
     // Create an array to hold the URLs
     const imageUrls = [];
