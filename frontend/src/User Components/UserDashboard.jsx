@@ -133,7 +133,7 @@ const UserDashboard = ({ uid }) => {
         <Layout style={{ padding: '24px' }}>
           <Content style={{ margin: 0, minHeight: 280 }}>
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <h6>Recent Orders:</h6>
+              <h6>Recent Bookings:</h6>
               <Search
                 placeholder="Search by category"
                 style={{ width: 350 }}

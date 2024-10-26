@@ -16,7 +16,7 @@ const Orders = ({uid}) => {
           <Breadcrumb
             items={[
                 {title:"Barath"},
-                {title:"Orders"}
+                {title:"Bookings"}
             ]}
           />
         </div>

@@ -1,7 +1,14 @@
-import React from 'react';
-import { Table, Tag } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Empty, Table, Tag } from 'antd';
+import axios from 'axios';
 
-const PaymentHisTable = ({ paymentHistory }) => {
+const PaymentsTable = ({uid}) => {
+    const [paymentHistory,setPaymentHistory]=useState([])
+    useEffect(()=>{
+        axios.post("http://localhost:5675/sellergetpayments",{uid}).then(res=>{
+          setPaymentHistory(res.data)
+        })
+      },[])
   // Sort payment history by date in descending order
   const sortedPaymentHistory = [...paymentHistory].sort((a, b) => {
     return new Date(b.date) - new Date(a.date); // Sort by date, most recent first
@@ -12,6 +19,11 @@ const PaymentHisTable = ({ paymentHistory }) => {
       title: 'Payment ID',
       dataIndex: 'paymentId',
       key: 'paymentId',
+    },
+    {
+        title:'Paid By',
+        dataIndex:'paymentBy',
+        key:"paidby"
     },
     {
       title: 'Date',
@@ -58,7 +70,10 @@ const PaymentHisTable = ({ paymentHistory }) => {
     },
   ];
 
-  return <Table dataSource={sortedPaymentHistory} columns={columns} />;
+  return (
+    paymentHistory.length>0 ? <Table dataSource={sortedPaymentHistory} columns={columns} />:(
+    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No Payments found" />
+  ))
 };
 
-export default PaymentHisTable;
+export default PaymentsTable;

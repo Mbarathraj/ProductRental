@@ -37,10 +37,25 @@ const Products = ({ uid, products, setProducts }) => {
           onChange={handleSearchChange}
         />
       </div>
-      <div className='ms-3 m-2 d-flex align-items-center gap-2 justify-content-end' style={{ fontSize: "20px", cursor: "pointer" }}>
-        <strong>Add Product</strong>
-        <PlusCircleTwoTone onClick={() => setAddModal(true)} />
-      </div>
+      <div
+  className='ms-3 m-2 d-flex align-items-center gap-2 justify-content-end'
+  onClick={() => setAddModal(true)}
+  style={{
+    width:"200px",
+    fontSize: "20px",
+    cursor: "pointer",
+    backgroundColor: "#f0f8ff", // Light background
+    borderRadius: "8px", // Rounded corners
+    padding: "10px 15px", // Adequate padding
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // Subtle shadow
+    transition: "background-color 0.3s, transform 0.2s", // Smooth transitions
+  }}
+  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#e0f7fa")} // Hover effect
+  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#f0f8ff")} // Reset on leave
+>
+  <strong style={{ color: "#007bff" }}>Add Property</strong> {/* Primary text color */}
+  <PlusCircleTwoTone  style={{ fontSize: "24px", color: "#007bff" }} /> {/* Icon color */}
+</div>
       <div className="d-flex gap-3 flex-wrap justify-content-center mt-2">
         {filteredProducts.map((product, index) => (
           <ProductCard 

@@ -84,11 +84,11 @@ const handleEdit=(data)=>{
         <Input />
       </Form.Item>
 
-      <Form.Item label="Images">
+      {/* <Form.Item label="Images">
         <Upload>
           <Button>Upload Images</Button>
         </Upload>
-      </Form.Item>
+      </Form.Item> */}
 
       <Form.Item>
         <Button type="primary" htmlType="submit">

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Layout,
@@ -16,6 +16,7 @@ import {
 import {
   DashboardOutlined,
   EditOutlined,
+  HistoryOutlined,
   LogoutOutlined,
   PhoneOutlined,
   SaveOutlined,
@@ -23,6 +24,7 @@ import {
 } from "@ant-design/icons";
 import ProductsTable from "./ProductsTable";
 import axios from "axios";
+import PaymentsTable from "./PaymentsTable";
 
 const { Header, Content, Sider } = Layout;
 const { Search } = Input;
@@ -32,13 +34,13 @@ const SellerDashboard = ({ products, uid }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [messageOpen, setMessageOpen] = useState(false);
   const navigate = useNavigate();
-
+  const [active,setActive]=useState("dashboard")
   // Filter products based on search term
   const filteredOrders = products.filter(product =>
     product.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  
   const [message, setMessage] = useState(""); 
-
   const handleMessage=()=>{
     console.log(message)
       const issue={
@@ -75,11 +77,24 @@ const SellerDashboard = ({ products, uid }) => {
               onClick={() => setDrawerOpen(true)}
             />
           </div>
-          <Menu mode="inline" defaultSelectedKeys={['1']}>
-            <Menu.Item key="1" icon={<DashboardOutlined />}>
+          <Menu mode="inline" defaultSelectedKeys={['1']}
+          >
+            <Menu.Item key="1" icon={<DashboardOutlined
+            />
+          }
+          onClick={()=>{
+            setActive("dashboard")
+           }}>
               Dashboard
             </Menu.Item>
-            <Menu.Item key="2" icon={<LogoutOutlined />} onClick={() => {
+            <Menu.Item key="2" icon={<HistoryOutlined />}
+             onClick={()=>{
+              setActive("payments")
+             }}
+            >
+              Payments
+            </Menu.Item>
+            <Menu.Item key="3" icon={<LogoutOutlined />} onClick={() => {
               alert("Logging out...");
               navigate("/");
             }}>
@@ -90,14 +105,13 @@ const SellerDashboard = ({ products, uid }) => {
         <Layout style={{ padding: '24px' }}>
           <Content style={{ margin: 0, minHeight: 280 }}>
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <h6>Recent Orders:</h6>
+              <h6>Your Properties:</h6>
               <Search
                 placeholder="Search by category"
                 style={{ width: 350 }}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-
             <div className="d-flex gap-2 mb-3">
               {[1, 2, 3, 4].map((card) => (
                 <Card key={card} style={{ width: "100%", height: "100px", textAlign: "center", background: "#f5f5f5" }}>
@@ -137,7 +151,8 @@ const SellerDashboard = ({ products, uid }) => {
               </Popover>
             </div>
 
-            <div>
+            {
+               active=="dashboard" && (<div>
               {products.length > 0 ? (
                 <ProductsTable orders={filteredOrders} />
               ) : (
@@ -145,7 +160,12 @@ const SellerDashboard = ({ products, uid }) => {
                   <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No products found" />
                 </div>
               )}
-            </div>
+            </div>)
+            }
+             {
+                 active=='payments' && 
+                 <PaymentsTable uid={uid}/>
+            }
           </Content>
         </Layout>
       </Layout>

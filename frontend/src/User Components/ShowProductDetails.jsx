@@ -22,6 +22,7 @@ import {
   TagOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import moment from 'moment';
 import { useLocation } from "react-router-dom";
 import { useProducts } from "./ProductContext";
 import axios from "axios";
@@ -58,24 +59,31 @@ const ShowProductDetails = () => {
   };
   // Function to handle payment success
   const handlePaymentSuccess = () => {
-    // Add logic to update your state or handle post-payment tasks
     console.log("Payment was successful!");
     setPaymentModalOpen(false); // Close the payment modal
-    // You may also want to refresh the product details or update bookings here
   };
 
   const handleBookNow = () => {
-    // Logic to calculate totalPrice based on the selected dates
-    // For demonstration, setting a dummy value
-    setTotalPrice(totalPrice); // Set the total price dynamically
-    setPaymentModalOpen(true); // Open the payment modal
+    setTotalPrice(totalPrice); 
+    setPaymentModalOpen(true); 
   };
   const calculatePrice = (start, end) => {
     if (start && end) {
-      const interval = end - start;
-      const additionalCost = Math.ceil(interval / (10000 * 60 * 60)); // $10 per hour
-      setTotalPrice(originalPrice + additionalCost);
+      const startDate = new Date(start);
+      const endDate = new Date(end);
+      const interval = endDate - startDate;
+      const days = Math.ceil(interval / (1000 * 60 * 60 * 24)); 
+      let additionalCost = 0;
+      if (days === 0) {
+        additionalCost = originalPrice; 
+      } else if (days === 1) {
+        additionalCost = 2 *originalPrice;
+      } else {
+        additionalCost = (days+1) * originalPrice;
+      }
+      setTotalPrice(additionalCost);
     }
+    
   };
   const handleStartChange = (date) => {
     if (date) {
@@ -111,7 +119,8 @@ const ShowProductDetails = () => {
 
   const handleReviews = (product) => {
     if (!review) return message.warning("Input is required");
-    if(starValue==0 || !starValue) return message.warning("Rating also Required")
+    if (starValue == 0 || !starValue)
+      return message.warning("Rating also Required");
     const newReview = {
       rateby: uid,
       review,
@@ -127,15 +136,16 @@ const ShowProductDetails = () => {
         id,
       };
     });
-    product.ratings.push(newReview)
-    axios.post("http://localhost:5675/postreview",{ratings: newReview,id}).then(res =>{
-       console.log(res.data)
-       setProducts(data);
-    } )
-    setReview("")
-    setStarValue(0)
+    product.ratings.push(newReview);
+    axios
+      .post("http://localhost:5675/postreview", { ratings: newReview, id })
+      .then((res) => {
+        console.log(res.data);
+        setProducts(data);
+      });
+    setReview("");
+    setStarValue(0);
   };
- 
 
   useEffect(() => {
     if (products[index]?.data?.booked) {
@@ -203,17 +213,17 @@ const ShowProductDetails = () => {
             </Space>
             <Space direction="vertical" size="large" style={{ width: "100%" }}>
               <Descriptions title="Specifications" column={3} bordered>
-                <Descriptions.Item label="Brand">
-                  {product.specifications.brand}
+                <Descriptions.Item label="Nearby">
+                  {product.specifications.nearby}
                 </Descriptions.Item>
-                <Descriptions.Item label="Color">
-                  {product.specifications.color}
+                <Descriptions.Item label="Squarefeet">
+                  {product.specifications.squarefeet}
                 </Descriptions.Item>
-                <Descriptions.Item label="Model">
-                  {product.specifications.model}
+                <Descriptions.Item label="City">
+                  {product.location.city}
                 </Descriptions.Item>
-                <Descriptions.Item label="Weight">
-                  {product.specifications.weight + "kg"}
+                <Descriptions.Item label="Address">
+                  {product.location.address}
                 </Descriptions.Item>
               </Descriptions>
 
@@ -227,48 +237,52 @@ const ShowProductDetails = () => {
                 <Text strong>Category:</Text>
                 <Tag color="blue">{product.category}</Tag>
               </Space>
-
-              <Space align="center">
-                <Text strong>Overall Rating:</Text>
-                <Rate allowHalf defaultValue={4.5} disabled />
-                <Text>({"rating"})</Text>
-              </Space>
             </Space>
           </Card>
         </div>
         <div className="mt-1">
           <h5>Reviews:</h5>
           <div
-        className="p-3 w-25 justify-content-center"
-        style={{ borderRadius: '8px', backgroundColor: '#f7f7f7', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}
-      >
-        <TextArea
-          onChange={(e) => setReview(e.target.value)}
-          value={review}
-          style={{
-            minHeight: '60px',
-            maxHeight: '100px',
-            resize: 'none',
-            border: '1px solid #d9d9d9',
-            borderRadius: '4px',
-            outline: 'none',
-            marginRight: '12px',
-          }}
-          autoSize={{ minRows: 1, maxRows: 3 }}
-          placeholder="Type your message..."
-        />
-        <div className="m-2">
-          <Rate onChange={setStarValue} value={starValue} allowHalf style={{ marginBottom: '8px' }} className="me-5"/>
-          <Button
-            type="primary"
-            icon={<SendOutlined />}
-            onClick={() => handleReviews(product)}
-            style={{ alignSelf: 'flex-end' }}
+            className="p-3 w-25 justify-content-center"
+            style={{
+              borderRadius: "8px",
+              backgroundColor: "#f7f7f7",
+              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            }}
           >
-            Send
-          </Button>
-        </div>
-      </div>
+            <TextArea
+              onChange={(e) => setReview(e.target.value)}
+              value={review}
+              style={{
+                minHeight: "60px",
+                maxHeight: "100px",
+                resize: "none",
+                border: "1px solid #d9d9d9",
+                borderRadius: "4px",
+                outline: "none",
+                marginRight: "12px",
+              }}
+              autoSize={{ minRows: 1, maxRows: 3 }}
+              placeholder="Type your message..."
+            />
+            <div className="m-2">
+              <Rate
+                onChange={setStarValue}
+                value={starValue}
+                allowHalf
+                style={{ marginBottom: "8px" }}
+                className="me-5"
+              />
+              <Button
+                type="primary"
+                icon={<SendOutlined />}
+                onClick={() => handleReviews(product)}
+                style={{ alignSelf: "flex-end" }}
+              >
+                Send
+              </Button>
+            </div>
+          </div>
           <div
             style={{
               maxHeight: "200px",
@@ -277,27 +291,33 @@ const ShowProductDetails = () => {
             }}
             className="d-flex flex-column gap-3 p-4"
           >
-           {product.ratings && 
+            {product.ratings && 
   product.ratings
     .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort by date, most recent first
     .map((rating, index) => (
-      <div className="border-bottom border-1" key={index}>
-        <div className="d-flex gap-1 align-items-center">
+      <div className="border-bottom border-1 mb-3 pb-3" key={index}>
+        <div className="d-flex align-items-start">
           <UserOutlined
-            style={{ fontSize: "21px" }}
-            className="border rounded-5 p-3"
-          />{" "}
-          <div>
-            <strong className="me-2">{rating.rateby}</strong>
+            style={{ fontSize: "24px", color: "#1890ff" }} // Slightly larger icon with color
+            className="border rounded-circle p-2"
+          />
+          <div className="ms-3">
+            <strong className="d-block">{rating.rateby}</strong>
             <Rate
               allowHalf
               disabled
               value={rating.star}
-              style={{ fontSize: "15px" }}
+              style={{ fontSize: "16px", color: "#fadb14" }} // Adjusted star color
             />
+            &nbsp; &nbsp;
+            <span className="text-muted" style={{ fontSize: "14px" }}>
+              {new Date(rating.date).toLocaleDateString()} {/* Formatted date */}
+            </span>
           </div>
         </div>
-        <div className="ms-5 mt-2 mb-2">{rating.review}</div>
+        <div className="ms-5 mt-2 text-muted" style={{ fontStyle: "italic" }}>
+          {rating.review}
+        </div>
       </div>
     ))}
 
@@ -339,6 +359,7 @@ const ShowProductDetails = () => {
               format="YYYY-MM-DD HH:mm"
               className="form-control"
               onChange={handleStartChange}
+              disabledDate={(current) => current && current < moment().startOf('day')}
             />
           </Form.Item>
 
@@ -357,6 +378,7 @@ const ShowProductDetails = () => {
               format="YYYY-MM-DD HH:mm"
               className="form-control"
               onChange={handleEndChange}
+              disabledDate={(current) => current && current < moment().startOf('day')}
             />
           </Form.Item>
 

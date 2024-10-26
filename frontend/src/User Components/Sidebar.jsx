@@ -36,7 +36,7 @@ const Sidebar = ({ active, setActive }) => {
               style={{ fontSize: "20px", cursor: "pointer" }} onClick={()=> setActive("orders")}
             />
           </div>
-          {active == "orders" && <h6>Orders</h6>}
+          {active == "orders" && <h6>Bookings</h6>}
         </div>
       </div>
     </div>

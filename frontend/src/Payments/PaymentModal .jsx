@@ -11,7 +11,7 @@ const PaymentModal = ({ isOpen, onRequestClose, totalPrice, onPaymentSuccess, pr
   const [loading, setLoading] = useState(false);
   const stripe = useStripe();
   const elements = useElements();
-
+  console.log(product)
   let bookingResponse;
 
   const handlePayment = async () => {
@@ -38,7 +38,8 @@ const PaymentModal = ({ isOpen, onRequestClose, totalPrice, onPaymentSuccess, pr
         status:"Completed",
         date: new Date().toLocaleString(),
         productId:id,
-        amount:totalPrice
+        amount:totalPrice,
+        sellerid:product.sellerid
       }
       
       axios.post("http://localhost:5675/addpayment",{paymentDetails}).then(res => {

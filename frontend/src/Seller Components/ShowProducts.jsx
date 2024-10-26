@@ -86,18 +86,21 @@ const ShowProducts = () => {
             </Space>
             <Space direction="vertical" size="large" style={{ width: "100%" }}>
               <Descriptions title="Specifications" column={3} bordered>
-                <Descriptions.Item label="Brand">
-                  {product.specifications.brand}
+                <Descriptions.Item label="Nearby">
+                  {product.specifications.nearby}
                 </Descriptions.Item>
-                <Descriptions.Item label="Color">
-                  {product.specifications.color}
+                <Descriptions.Item label="Squarefeet">
+                  {product.specifications.squarefeet}
                 </Descriptions.Item>
-                <Descriptions.Item label="Model">
-                  {product.specifications.model}
+                <Descriptions.Item label="City">
+                  {product.location.city}
                 </Descriptions.Item>
-                <Descriptions.Item label="Weight">
+                <Descriptions.Item label="Address">
+                  {product.location.address}
+                </Descriptions.Item>
+                {/* <Descriptions.Item label="Weight">
                   {product.specifications.weight + "kg"}
-                </Descriptions.Item>
+                </Descriptions.Item> */}
               </Descriptions>
 
               <div>
@@ -111,11 +114,11 @@ const ShowProducts = () => {
                 <Tag color="blue">{product.category}</Tag>
               </Space>
 
-              <Space align="center">
+              {/* <Space align="center">
                 <Text strong>Overall Rating:</Text>
                 <Rate allowHalf defaultValue={4.5} disabled />
                 <Text>({"rating"})</Text>
-              </Space>
+              </Space> */}
             </Space>
           </Card>
         </div>
@@ -129,29 +132,35 @@ const ShowProducts = () => {
             }}
             className="d-flex flex-column gap-3 p-4"
           >
-            {product.ratings &&
-              product.ratings.map((rating, index) => {
-                return (
-                  <div className="border-bottom border-1" key={index}>
-                    <div className="d-flex gap-1 align-items-center">
-                      <UserOutlined
-                        style={{ fontSize: "21px" }}
-                        className="border rounded-5 p-3"
-                      />{" "}
-                      <div>
-                        <strong className="me-2">{rating.rateby}</strong>
-                        <Rate
-                          allowHalf
-                          disabled
-                          value={rating.star}
-                          style={{ fontSize: "15px" }}
-                        />
-                      </div>
-                    </div>
-                    <div className="ms-5 mt-2 mb-2">{rating.review}</div>
-                  </div>
-                );
-              })}
+           {product.ratings && 
+  product.ratings
+    .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort by date, most recent first
+    .map((rating, index) => (
+      <div className="border-bottom border-1 mb-3 pb-3" key={index}>
+        <div className="d-flex align-items-start">
+          <UserOutlined
+            style={{ fontSize: "24px", color: "#1890ff" }} // Slightly larger icon with color
+            className="border rounded-circle p-2"
+          />
+          <div className="ms-3">
+            <strong className="d-block">{rating.rateby}</strong>
+            <Rate
+              allowHalf
+              disabled
+              value={rating.star}
+              style={{ fontSize: "16px", color: "#fadb14" }} // Adjusted star color
+            />
+            &nbsp; &nbsp;
+            <span className="text-muted" style={{ fontSize: "14px" }}>
+              {new Date(rating.date).toLocaleDateString()} {/* Formatted date */}
+            </span>
+          </div>
+        </div>
+        <div className="ms-5 mt-2 text-muted" style={{ fontStyle: "italic" }}>
+          {rating.review}
+        </div>
+      </div>
+    ))}
           </div>
         </div>
       </div>

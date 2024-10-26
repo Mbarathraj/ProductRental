@@ -34,7 +34,11 @@ const ProductCard = ({ index, product, id, uid, products, setProducts }) => {
               <img
                 alt="example"
                 src={product && product.data.images[0]}
-                width={200}
+                style={{
+                  width: "100%", // Make image responsive
+                  height: "100%", // Set height to fill the container
+                  objectFit: "cover", // Maintain aspect ratio and cover the area
+                }}
               />
             </div>
           }
@@ -54,7 +58,7 @@ const ProductCard = ({ index, product, id, uid, products, setProducts }) => {
             avatar={
               <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />
             }
-            title={product.data.specifications.brand}
+            title={product.data.specifications.name}
             description={product.data.description}
           />
         </Card>

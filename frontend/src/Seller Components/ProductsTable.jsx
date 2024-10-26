@@ -9,8 +9,13 @@ const ProductsTable = ({ orders }) => {
       key: 'category',
     },
     {
-      title: 'Model',
-      dataIndex: ["specifications","model"],
+      title: 'Nearby',
+      dataIndex: ["specifications","nearby"],
+      key: 'model',
+    },
+    {
+      title: 'Squarefeet',
+      dataIndex: ["specifications","squarefeet"],
       key: 'model',
     },
     {
@@ -18,6 +23,12 @@ const ProductsTable = ({ orders }) => {
       dataIndex:"booked",
       key: 'booked',
       render: (booked) => !booked ? "Not Yet":"Booked"
+    },
+    {
+      title: 'Booked By',
+      dataIndex:"bookedby",
+      key: 'booked',
+      render: (bookedby) => !bookedby ? "Not Yet":bookedby
     },
     // {
     //   title: 'Status',

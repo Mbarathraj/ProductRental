@@ -52,7 +52,7 @@ const AdminDashboard = () => {
             <Menu.Item key="1" icon={<DashboardOutlined />}>
               Dashboard
             </Menu.Item>
-            <Menu.Item key="2" icon={<UserSwitchOutlined />} onClick={() => setRole("seller")}>
+            <Menu.Item key="1" icon={<UserSwitchOutlined />} onClick={() => setRole("seller")}>
               Sellers
             </Menu.Item>
             <Menu.Item key="3" icon={<UserOutlined />} onClick={() => setRole("user")}>

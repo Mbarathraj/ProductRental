@@ -35,7 +35,7 @@ const Products = ({ uid }) => {
       </div>
       <div className="d-flex justify-content-center gap-5 flex-wrap">
         {filteredProducts.map((product, index) => (
-          <div>
+          <div key={index}>
             <ProductCard 
               index={index} 
               product={product.data} 

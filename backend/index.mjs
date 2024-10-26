@@ -174,7 +174,10 @@ app.post("/toBook", async (req, res) => {
     // Update the product to mark it as booked
     const productDocRef = doc(DB, "products", id);
     await updateDoc(productDocRef, {
-      booked: true
+      booked: true,
+      bookedby:product.bookedby,
+      startdate:product.startdate,
+      enddate:product.enddate
     });
     console.log("com[ldkjgfhggh")
     // Update the user's orders
@@ -229,7 +232,10 @@ app.post("/toUnBook", async (req, res) => {
     // Update the product to mark it as booked
     const productDocRef = doc(DB, "products", id);
     await updateDoc(productDocRef, {
-      booked: false
+      booked: false,
+      bookedby:"",
+      startdate:"",
+      enddate:""
     });
     // Update the user's orders
     const userDocRef = doc(DB, "users", uid);
@@ -288,6 +294,14 @@ app.post("/addpayment",(req,res)=>{
 
 app.post("/paymenthistory",(req,res)=>{
   const docRef=query(paymentColletion,where("paymentBy","==",req.body.uid))
+  getDocs(docRef).then(snap=>{
+    const datas=snap.docs.map(data => data.data())
+    res.send(datas)
+  })
+})
+
+app.post("/sellergetpayments",(req,res)=>{
+  const docRef=query(paymentColletion,where("sellerid","==",req.body.uid))
   getDocs(docRef).then(snap=>{
     const datas=snap.docs.map(data => data.data())
     res.send(datas)

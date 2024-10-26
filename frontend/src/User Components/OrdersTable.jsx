@@ -10,9 +10,19 @@ const OrdersTable = ({ orders }) => {
       key: 'category',
     },
     {
-      title: 'Model',
-      dataIndex: ["specifications","model"],
-      key: 'model',
+      title: 'Nearby',
+      dataIndex: ["specifications","nearby"],
+      key: 'nearby',
+    },
+    {
+      title: 'City',
+      dataIndex: ["location","city"],
+      key: 'city',
+    },
+    {
+      title: 'Address',
+      dataIndex: ["location","address"],
+      key: 'address',
     },
     {
       title: 'Payment Status',
